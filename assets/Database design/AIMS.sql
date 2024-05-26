@@ -1,3 +1,5 @@
+CREATE DATABASE aims;
+
 CREATE TABLE `media_product` (
   `id` integer PRIMARY KEY AUTO_INCREMENT,
   `title` varchar(255) NOT NULL,

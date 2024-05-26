@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.Pane?>
+
+<Pane prefHeight="150.0" prefWidth="400.0" style="-fx-border-width: 2px; -fx-border-color: black;" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.views.media_items.RushDeliveryMediaItem">
+    <ImageView fx:id="imageView" fitHeight="150.0" fitWidth="150.0" layoutX="-1.0" layoutY="1.0" pickOnBounds="true" preserveRatio="true" />
+    <Label fx:id="mediaQuantityLabel" layoutX="224.0" layoutY="76.0" text="1" />
+    <Label layoutX="161.0" layoutY="20.0" text="Tên sản phẩm: " />
+    <Label layoutX="161.0" layoutY="76.0" text="Số lượng: " />
+    <Button fx:id="removeMediaButton" layoutX="262.0" layoutY="108.0" mnemonicParsing="false" onAction="#removeMedia" prefHeight="25.0" prefWidth="122.0" text="Loại khỏi giỏ hàng" />
+    <Label layoutX="161.0" layoutY="48.0" text="Giá: " />
+    <Label layoutX="257.0" layoutY="76.0" text="Loại: " />
+    <Label fx:id="mediaLabel" layoutX="244.0" layoutY="20.0" text="Book 1" />
+    <Label fx:id="priceLabel" layoutX="191.0" layoutY="48.0" text="35.000 đồng" />
+    <Label fx:id="deliveryTypeLabel" layoutX="289.0" layoutY="76.0" text="Giao hàng nhanh" />
+</Pane>

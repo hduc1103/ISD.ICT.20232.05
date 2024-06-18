@@ -1,0 +1,24 @@
+.split-menu-button:hover, .button:hover {
+    -fx-background-color: #a3d8ff;
+}
+
+.image-view:hover {
+    -fx-opacity: 0.8;
+}
+
+.text-field {
+    -fx-background-radius: 10;
+    -fx-padding: 5;
+}
+
+.hbox {
+    -fx-padding: 10;
+}
+
+.vbox {
+    -fx-padding: 10;
+}
+
+.pane {
+    -fx-padding: 10;
+}

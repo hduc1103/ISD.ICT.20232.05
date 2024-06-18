@@ -14,14 +14,16 @@ public class Invoice {
     private String paypalId;
     private String status = "CREATED";
 
-    public Invoice() {
+    public Invoice(){
+
     }
 
-    public Invoice(Order order) {
+    public Invoice(Order order){
         this.order = order;
+        this.amount = order.getAmount() + order.getShippingFees();
     }
 
-    public Invoice(Order order, String id) {
+    public Invoice(Order order, String id){
         this.order = order;
         this.paypalId = id;
         this.amount = order.getAmount() + order.getShippingFees();
@@ -30,66 +32,61 @@ public class Invoice {
     public Order getOrder() {
         return order;
     }
-
     public int getOrderId() {
         return this.order.getID();
     }
-
     public void setAmount(int amount) {
         this.amount = amount;
     }
 
-    public void setId(int id) {
-        this.Id = id;
-    }
-
-    public int getId() {
-        return this.Id;
-    }
+    public void setId(int id){this.Id = id;}
+    public int getId(){return this.Id;}
 
     public int getAmount() {
         return amount;
     }
 
-    public String getPaypalId() {
-        return this.paypalId;
-    }
+    public String getPaypalId(){ return this.paypalId;}
 
-    public void setPaypalId(String paypalId) {
-        this.paypalId = paypalId;
-    }
+    public void setPaypalId(String paypalId){ this.paypalId = paypalId;}
 
-    public String getStatus() {
-        return status;
-    }
+    public String getStatus(){return status;}
 
-    public void setStatus(String status) {
-        this.status = status;
-    }
+    public void setStatus(String status){this.status=status;}
 
-    public void updateStatus(String status) throws SQLException {
+    public void updateStatus(String status){
         this.status = status;
         Connection connection = AIMSDB.getConnection();
-        PreparedStatement preparedStatement = null;
-        try {
-            String sql = "UPDATE invoice SET status = ? WHERE VNPayId = ?";
+        PreparedStatement preparedStatement;
+        try{
+            String sql = "UPDATE invoice SET status = ?, VNPayId = ? WHERE id = ?";
             preparedStatement = connection.prepareStatement(sql);
-            preparedStatement.setString(1, status);
-            preparedStatement.setString(2, this.getPaypalId());
+            preparedStatement.setString(1,status);
+            preparedStatement.setString(2,this.getPaypalId());
+            preparedStatement.setInt(3, this.getId());
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
             throw new RuntimeException(e);
-        } finally {
-            // Ensure resources are closed
-            if (preparedStatement != null) {
-                preparedStatement.close();
-            }
-            if (connection != null) {
-                connection.close();
-            }
         }
     }
 
+    // New static method to update status by invoice ID
+    public static void updateStatus(int invoiceId, String status) throws SQLException {
+        Connection connection = AIMSDB.getConnection();
+        PreparedStatement preparedStatement = null;
+        try {
+            String sql = "UPDATE invoice SET status = ? WHERE id = ?";
+            preparedStatement = connection.prepareStatement(sql);
+            preparedStatement.setString(1, status);
+            preparedStatement.setInt(2, invoiceId);
+            preparedStatement.executeUpdate();
+        } finally {
+            // Close PreparedStatement to avoid resource leaks and release resources
+            if (preparedStatement != null) {
+                preparedStatement.close();
+            }
+        }
+    }
     public void saveInvoice() throws SQLException {
         Connection connection = AIMSDB.getConnection();
         PreparedStatement preparedStatement = null;
@@ -97,27 +94,35 @@ public class Invoice {
             String sql = "INSERT INTO `invoice` (orderId, amount, VNPayId, status) VALUES (?, ?, ?, ?)";
             preparedStatement = connection.prepareStatement(sql);
 
-            // Set parameters for the SQL query
+            // Giả sử getAmount() và getUrlPayOrder() trả về giá trị thích hợp
             preparedStatement.setInt(1, order.getID()); // orderId
             preparedStatement.setDouble(2, this.getAmount()); // amount
             preparedStatement.setString(3, this.getPaypalId()); // paypalId
-            preparedStatement.setString(4, this.getStatus()); // status
+            preparedStatement.setString(4,this.getStatus()); // status
             preparedStatement.executeUpdate();
 
             ResultSet generatedKeys = preparedStatement.getGeneratedKeys();
-            if (generatedKeys.next()) {
-                int generatedId = generatedKeys.getInt(1);
-                this.setId(generatedId);
-            }
+            int generatedId = generatedKeys.getInt(1);
+            this.setId(generatedId);
         } finally {
-            // Close resources to avoid leaks
+            // Đóng PreparedStatement để tránh rò rỉ nguồn và giải phóng tài nguyên
             if (preparedStatement != null) {
                 preparedStatement.close();
             }
-            if (connection != null) {
-                connection.close();
-            }
         }
+    }
+
+    public static void updateInvoiceStatus(int id, Boolean approved) throws SQLException{
+        String status = "";
+        if (approved) status = "APPROVED";
+        else status = "REJECTED";
+        String sql = "UPDATE Invoice SET status = ? WHERE id = ?";
+        Connection conn = AIMSDB.getConnection();
+        PreparedStatement preparedStatement = conn.prepareStatement(sql);
+        preparedStatement.setString(1, status);
+        preparedStatement.setInt(2, id);
+
+        preparedStatement.executeUpdate();
     }
 
     public static ArrayList<Invoice> getListInvoice() throws SQLException {
@@ -134,4 +139,5 @@ public class Invoice {
         }
         return invoices;
     }
+
 }

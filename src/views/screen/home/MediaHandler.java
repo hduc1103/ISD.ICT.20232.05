@@ -71,6 +71,7 @@ public class MediaHandler extends FXMLScreenHandler{
                 media.setQuantity(media.getQuantity() - spinnerChangeNumber.getValue());
                 mediaAvail.setText(String.valueOf(media.getQuantity()));
                 // Content coupling
+                // Content coupling
                 int totalItems = cart.getTotalMedia();
                 String itemLabel;
                 if (totalItems == 1 || totalItems==0) {

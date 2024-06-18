@@ -120,7 +120,7 @@ public class InvoiceListAdminHandler extends BaseScreenAdminHandler {
     private void updateInvoiceStatus(Invoice invoice, String status) {
         try {
             // Update the status in the database
-            invoice.updateStatus(status);
+            Invoice.updateStatus(invoice.getId(), status);
         } catch (SQLException e) {
             try {
                 PopupScreen.error(e.getMessage());

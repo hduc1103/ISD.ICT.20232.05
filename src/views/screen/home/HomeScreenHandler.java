@@ -6,6 +6,7 @@ import controller.InvoiceListController;
 import controller.ViewCartController;
 import entity.cart.Cart;
 import entity.media.Media;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
@@ -19,6 +20,7 @@ import javafx.stage.Stage;
 import utils.Configs;
 import utils.Utils;
 import views.screen.BaseScreenHandler;
+import views.screen.SessionManager;
 import views.screen.cart.CartScreenHandler;
 import views.screen.invoicelist.InvoiceListHandler;
 import views.screen.media.MediaDetailHandler;
@@ -99,7 +101,7 @@ public class HomeScreenHandler extends BaseScreenHandler implements Initializabl
     }
 
     @FXML
-    private void showNextMedia(MouseEvent event) {
+    public void showNextMedia(MouseEvent event) {
         if (currentPage < getTotalPages() - 1) {
             currentPage++;
             List<MediaHandler> displayedItems = updateMediaDisplay(this.displayedItems);
@@ -107,8 +109,21 @@ public class HomeScreenHandler extends BaseScreenHandler implements Initializabl
         }
     }
 
+//    @FXML
+//    public void handleSignOutButton(ActionEvent event) {
+//        SessionManager.setLoggedIn(false);
+//        HomeScreenHandler homeHandler = null;
+//        try {
+//            homeHandler = new HomeScreenHandler(stage, Configs.LOGIN_SIGNUP_PATH);
+//            homeHandler.setImage();
+//            homeHandler.show();
+//        } catch (IOException e) {
+//            throw new RuntimeException(e);
+//        }
+//    }
+
     @FXML
-    private void showPreviousMedia(MouseEvent event) {
+    public void showPreviousMedia(MouseEvent event) {
         if (currentPage > 0) {
             currentPage--;
             List<MediaHandler> displayedItems = updateMediaDisplay(this.displayedItems);
@@ -249,42 +264,37 @@ public class HomeScreenHandler extends BaseScreenHandler implements Initializabl
 
         // Set action
         menuItem.setOnAction(e -> {
-            // empty home media
-            hboxMedia.getChildren().forEach(node -> {
-                VBox vBox = (VBox) node;
-                vBox.getChildren().clear();
-            });
+            // Filter items based on the selected category or price range
+            List<MediaHandler> filteredItems;
 
-            // filter only media with the chosen category
-            List<MediaHandler> filteredItems = new ArrayList<>();
-            homeItems.forEach(me -> {
-                MediaHandler media = (MediaHandler) me;
-                if (media.getMedia().getTitle().toLowerCase().startsWith(text.toLowerCase())) {
-                    filteredItems.add(media);
-                } else {
-                    if (text.equals("<20đ")) {
-                        if (media.getMedia().getPrice() < 20) {
-                            filteredItems.add(media);
-                        }
+            switch (text) {
+                case "<20đ":
+                    filteredItems = homeItems.stream()
+                            .filter(mh -> mh.getMedia().getPrice() < 20)
+                            .collect(Collectors.toList());
+                    break;
+                case "20đ-50đ":
+                    filteredItems = homeItems.stream()
+                            .filter(mh -> mh.getMedia().getPrice() >= 20 && mh.getMedia().getPrice() < 50)
+                            .collect(Collectors.toList());
+                    break;
+                case "50đ-100đ":
+                    filteredItems = homeItems.stream()
+                            .filter(mh -> mh.getMedia().getPrice() >= 50 && mh.getMedia().getPrice() <= 100)
+                            .collect(Collectors.toList());
+                    break;
+                case ">100đ":
+                    filteredItems = homeItems.stream()
+                            .filter(mh -> mh.getMedia().getPrice() > 100)
+                            .collect(Collectors.toList());
+                    break;
+                default:
+                    filteredItems = homeItems.stream()
+                            .filter(mh -> mh.getMedia().getTitle().toLowerCase().contains(text.toLowerCase()))
+                            .collect(Collectors.toList());
+                    break;
+            }
 
-                    } else if (text.equals("20đ-50đ")) {
-                        if (media.getMedia().getPrice() >= 20 && media.getMedia().getPrice() < 50) {
-                            filteredItems.add(media);
-                        }
-                    } else if (text.equals("50đ-100đ")) {
-                        if (media.getMedia().getPrice() >= 50 && media.getMedia().getPrice() <= 100) {
-                            filteredItems.add(media);
-                        }
-                    } else if (text.equals(">100đ")) {
-                        if (media.getMedia().getPrice() > 100) {
-                            filteredItems.add(media);
-                        }
-                    }
-
-                    Collections.sort(filteredItems, Comparator.comparingDouble(
-                            mediax -> ((MediaHandler) mediax).getMedia().getPrice()));
-                }
-            });
             checkEmpty(filteredItems);
         });
 

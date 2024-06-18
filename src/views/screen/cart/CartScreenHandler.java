@@ -142,7 +142,7 @@ public class CartScreenHandler extends BaseScreenHandler {
 			// on mouse clicked, we back to home
 			aimsImage.setOnMouseClicked(e -> {
 				setScreenTitle("Home screen");
-				this.getPreviousScreen().show();
+                this.getPreviousScreen().show();
 			});
 			ShippingScreenHandler.setBController(placeOrderController);
 			ShippingScreenHandler.show();
@@ -206,7 +206,7 @@ public class CartScreenHandler extends BaseScreenHandler {
 		labelVAT.setText(Utils.getCurrencyFormat(vat));
 		labelAmount.setText(Utils.getCurrencyFormat(amount));
 	}
-
+	
 	private void displayCartWithMediaAvailability(){
 		// clear all old cartMedia
 		vboxCart.getChildren().clear();

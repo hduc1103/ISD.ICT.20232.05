@@ -1,38 +1,37 @@
 package entity.media;
 
-import entity.db.AIMSDB;
-import utils.Utils;
-
-import java.sql.*;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
-import java.util.logging.Logger;
+
+import entity.db.AIMSDB;
 
 /**
- * The general media class, for other media types, it can be extended by inheriting this class.
+ * The general media class, for another media it can be done by inheriting this class
+ * @author nguyendai
  */
 public class Media {
-
-    private static Logger LOGGER = Utils.getLogger(Media.class.getName());
-
     protected Statement stm;
     protected int id;
     protected String title;
     protected String category;
-    protected int value; // the real price of the product (e.g., 450)
-    protected int price; // the price displayed to customers (e.g., 500)
+    protected int value; // the real price of product (eg: 450)
+    protected int price; // the price which will be displayed on browser (eg: 500)
     protected int quantity;
     protected String type;
     protected String imageURL;
-    protected boolean isSupportedPlaceRushOrder = new Random().nextBoolean();
-    protected double weight = (new Random().nextDouble() * 0.9) + 0.1;
 
-    public Media() throws SQLException {
+    protected  boolean isSupportedPlaceRushOrder = new Random().nextBoolean();
+
+    public Media() throws SQLException{
         stm = AIMSDB.getConnection().createStatement();
     }
 
-    public Media(int id, String title, String category, int price, int quantity, String type) {
+    public Media (int id, String title, String category, int price, int quantity, String type) throws SQLException{
         this.id = id;
         this.title = title;
         this.category = category;
@@ -52,61 +51,59 @@ public class Media {
         this.imageURL = imageURL;
     }
 
-    // Get quantity from the database for the current media item
-    public int getQuantity() throws SQLException {
-        int updated_quantity = getMediaById(this.id).quantity;
+    public int getQuantity() throws SQLException{
+        int updated_quantity = getMediaById(id).quantity;
         this.quantity = updated_quantity;
         return updated_quantity;
     }
 
-    // Get a specific media item by its ID
-    public Media getMediaById(int id) throws SQLException {
-        String sql = "SELECT * FROM Media WHERE id = ?";
-        PreparedStatement stm = AIMSDB.getConnection().prepareStatement(sql);
-        stm.setInt(1, id);
-        ResultSet res = stm.executeQuery();
-        if (res.next()) {
+    public Media getMediaById(int id) throws SQLException{
+        String sql = "SELECT * FROM Media";
+        Statement stm = AIMSDB.getConnection().createStatement();
+        ResultSet res = stm.executeQuery(sql);
+		if(res.next()) {
             return new Media()
-                    .setId(res.getInt("id"))
-                    .setTitle(res.getString("title"))
-                    .setQuantity(res.getInt("quantity"))
-                    .setCategory(res.getString("category"))
-                    .setMediaURL(res.getString("imageUrl"))
-                    .setPrice(res.getInt("price"))
-                    .setType(res.getString("type"));
+                .setId(res.getInt("id"))
+                .setTitle(res.getString("title"))
+                .setQuantity(res.getInt("quantity"))
+                .setCategory(res.getString("category"))
+                .setMediaURL(res.getString("imageUrl"))
+                .setPrice(res.getInt("price"))
+                .setType(res.getString("type"));
         }
         return null;
     }
 
-    // Get all media items from the database
-    public List<Media> getAllMedia() throws SQLException {
+    public List<Media> getAllMedia() throws SQLException{
         Statement stm = AIMSDB.getConnection().createStatement();
-        ResultSet res = stm.executeQuery("SELECT * FROM Media");
+        ResultSet res = stm.executeQuery("select * from Media");
         return _extractMediaFromResultSet(res);
     }
 
-    // Get media items by their type
     public List<Media> getMediaByType(String type) throws SQLException {
-        String sql = "SELECT * FROM Media WHERE type = ?";
+        String sql = "select * from Media where type = ?";
         PreparedStatement stm = AIMSDB.getConnection().prepareStatement(sql);
         stm.setString(1, type);
         ResultSet res = stm.executeQuery();
-        return _extractMediaFromResultSet(res);
+
+        ArrayList<Media> items = _extractMediaFromResultSet(res);
+        for (Media media : items) {
+            System.out.println(media.quantity);
+        }
+        return items;
     }
 
-    // Update a specific field for a media item by its ID
     public void updateMediaFieldById(String tableName, int id, String field, Object value) throws SQLException {
         Statement stm = AIMSDB.getConnection().createStatement();
-        if (value instanceof String) {
+        if (value instanceof String){
             value = "\"" + value + "\"";
         }
-        String sql = String.format("UPDATE %s SET %s = %s WHERE id = %d", tableName, field, value, id);
-        stm.executeUpdate(sql);
+
+        stm.executeUpdate(" update " + tableName + " set " + field + "=" + value + " where id=" + id);
     }
 
-    // Add a new media item to the database
     public void addNewMedia(String title, String type, String category, String imgUrl, double price, int quantity) throws SQLException {
-        String sql = "INSERT INTO Media (title, type, category, imageUrl, price, quantity, value) VALUES (?, ?, ?, ?, ?, ?, ?)";
+        String sql = "insert into Media (title, type, category, imageUrl, price, quantity) values (?, ?, ?, ?, ?, ?)";
         PreparedStatement stm = AIMSDB.getConnection().prepareStatement(sql);
         stm.setString(1, title);
         stm.setString(2, type);
@@ -114,20 +111,18 @@ public class Media {
         stm.setString(4, imgUrl);
         stm.setDouble(5, price);
         stm.setInt(6, quantity);
-        stm.setInt(7, 1); // Assuming 'value' is defaulting to 1, could be parameterized if needed
 
         stm.executeUpdate();
     }
 
-    // Delete a media item by its ID
     public void deleteMediaById(int id) throws SQLException {
-        String sql = "DELETE FROM Media WHERE id = ?";
+        String sql = "delete from Media where id = ?";
         PreparedStatement stm = AIMSDB.getConnection().prepareStatement(sql);
         stm.setInt(1, id);
+
         stm.executeUpdate();
     }
 
-    // Helper method to extract media items from a ResultSet
     private ArrayList<Media> _extractMediaFromResultSet(ResultSet res) throws SQLException {
         ArrayList<Media> items = new ArrayList<>();
         while (res.next()) {
@@ -141,15 +136,16 @@ public class Media {
                     .setType(res.getString("type"));
             items.add(media);
         }
+
         return items;
     }
 
-    // Getters and Setters
+    // getter and setter 
     public int getId() {
         return this.id;
     }
 
-    public Media setId(int id) {
+    public Media setId(int id){
         this.id = id;
         return this;
     }
@@ -181,11 +177,11 @@ public class Media {
         return this;
     }
 
-    public String getImageURL() {
+    public String getImageURL(){
         return this.imageURL;
     }
 
-    public Media setMediaURL(String url) {
+    public Media setMediaURL(String url){
         this.imageURL = url;
         return this;
     }
@@ -204,33 +200,23 @@ public class Media {
         return this;
     }
 
-    public boolean getIsSupportedPlaceRushOrder() {
+    public  boolean getIsSupportedPlaceRushOrder() {
         return this.isSupportedPlaceRushOrder;
     }
 
-    public void setIsSupportedPlaceRushOrder(boolean isSupportedPlaceRushOrder) {
-        this.isSupportedPlaceRushOrder = isSupportedPlaceRushOrder;
-    }
-
-    public double getWeight() {
-        return this.weight;
-    }
-
-    public Media setWeight(double weight) {
-        this.weight = weight;
-        return this;
-    }
+    public  void setIsSupportedPlaceRushOrder(boolean b) { this.isSupportedPlaceRushOrder = b; }
 
     @Override
     public String toString() {
         return "{" +
-                " id='" + id + "'" +
-                ", title='" + title + "'" +
-                ", category='" + category + "'" +
-                ", price='" + price + "'" +
-                ", quantity='" + quantity + "'" +
-                ", type='" + type + "'" +
-                ", imageURL='" + imageURL + "'" +
-                "}";
-    }
+            " id='" + id + "'" +
+            ", title='" + title + "'" +
+            ", category='" + category + "'" +
+            ", price='" + price + "'" +
+            ", quantity='" + quantity + "'" +
+            ", type='" + type + "'" +
+            ", imageURL='" + imageURL + "'" +
+            "}";
+    }    
+
 }

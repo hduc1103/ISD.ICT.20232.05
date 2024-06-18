@@ -2,7 +2,10 @@ package views.screen.authentication;
 
 import javafx.scene.control.Alert;
 
-
+/**
+ *
+ * @author LENOVO
+ */
 public class alertMessage {
 
     private Alert alert;

@@ -16,21 +16,9 @@ import views.screen.BaseScreenHandler;
 import views.screen.invoice.InvoiceScreenHandler;
 
 import java.io.IOException;
-import java.util.Objects;
 
 public class PaymentScreenHandler extends BaseScreenHandler {
 	public Response response;
-	@FXML
-	private Button btnConfirmPayment;
-
-	@FXML
-	private ImageView loadingImage;
-
-	@FXML
-	private Label paymentLink;
-
-	@FXML
-	private Button btnGoToLink;
 
 	@FXML
 	private VBox vBox;
@@ -61,7 +49,7 @@ public class PaymentScreenHandler extends BaseScreenHandler {
 				response = new Response(newValue);
 				//System.out.println(invoice.getAmount());
 				//System.out.println("Amount VNPay: "+ response.getVnp_Amount());
-				if(Objects.equals(response.getVnp_ResponseCode(), "00")){
+                if(response.getVnp_ResponseCode().equals("00")){
 					try {
 						paymentController.emptyCart();
 						System.out.println("Successful Payment");
@@ -69,10 +57,14 @@ public class PaymentScreenHandler extends BaseScreenHandler {
 						ResultScreenHandler.setPreviousScreen(this);
 						ResultScreenHandler.setScreenTitle("Result");
 						ResultScreenHandler.show();
+						this.invoice.setPaypalId(response.getVnp_BankTranNo());
+						this.invoice.updateStatus("PAYMENT COMPLETED");
+
 					} catch (IOException e) {
 						throw new RuntimeException(e);
 					}
-				} else {
+				}
+				if(!response.getVnp_ResponseCode().equals("00")){
 					try {
 						BaseScreenHandler InvoiceScreenHandler = new InvoiceScreenHandler(this.stage, Configs.INVOICE_SCREEN_PATH, invoice);
 						InvoiceScreenHandler.setScreenTitle("Invoice Screen");
@@ -82,11 +74,22 @@ public class PaymentScreenHandler extends BaseScreenHandler {
 					}
 
 				}
-			}
+            }
 		});
 		vBox.getChildren().clear();
 		vBox.getChildren().add(paymentView);
 	}
+
+//	void confirmToPayOrder() throws IOException{
+//		String contents = "pay order";
+//		PaymentController ctrl = (PaymentController) getBController();
+//		Map<String, String> response = ctrl.payOrder(invoice, contents);
+//		BaseScreenHandler resultScreen = new ResultScreenHandler(this.stage, Configs.RESULT_SCREEN_PATH, response.get("RESULT"), response.get("MESSAGE") );
+//		resultScreen.setPreviousScreen(this);
+//		resultScreen.setHomeScreenHandler(homeScreenHandler);
+//		resultScreen.setScreenTitle("Result Screen");
+//		resultScreen.show();
+//	}
 
 	public PaymentScreenHandler(Stage stage, String screenPath, Invoice invoice) throws IOException {
 		super(stage, screenPath);

@@ -56,9 +56,9 @@ public class MediaInvoiceScreenHandler extends FXMLScreenHandler{
         price.setText(Utils.getCurrencyFormat(orderMedia.getPrice()));
         numOfProd.setText(String.valueOf(orderMedia.getQuantity()));
         setImage(image, orderMedia.getMedia().getImageURL());
-        image.setPreserveRatio(false);
-        image.setFitHeight(90);
-        image.setFitWidth(83);
+		image.setPreserveRatio(false);
+		image.setFitHeight(90);
+		image.setFitWidth(83);
     }
 
 }

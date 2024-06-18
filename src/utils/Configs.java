@@ -3,7 +3,9 @@ package utils;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontPosture;
 import javafx.scene.text.FontWeight;
-
+/**
+ * @author nguyenlm Contains the configs for AIMS Project
+ */
 public class Configs {
 
 	// api constants

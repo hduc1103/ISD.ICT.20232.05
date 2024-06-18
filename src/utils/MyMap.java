@@ -5,7 +5,15 @@ import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-
+/**
+ * The {@link utils.MyMap JSON} class represents JSON objects. 
+ * To create a new JSON object,
+ * JSON jsonObject = new JSON();
+ * jsonObject.put("key", value);
+ * 
+ * @author hieud
+ *
+ */
 public class MyMap extends LinkedHashMap<String, Object> {
 	private static final long serialVersionUID = 1L;
 

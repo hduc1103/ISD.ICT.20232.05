@@ -1,24 +1,137 @@
-.split-menu-button:hover, .button:hover {
-    -fx-background-color: #a3d8ff;
+/* General layout styles */
+.anchor-pane {
+    -fx-background-color: #F4F1E6; /* Soft beige background */
 }
 
-.image-view:hover {
-    -fx-opacity: 0.8;
+/* Header styles */
+.hbox-header {
+    -fx-background-color: linear-gradient(to bottom, #e6f7ff, #ccebff); /* Light blue gradient */
+    -fx-border-color: #5091e6; /* Muted blue border */
+    -fx-padding: 10;
 }
 
-.text-field {
-    -fx-background-radius: 10;
+/* Logo and label styles */
+.pane-logo {
+    -fx-alignment: center;
+    -fx-padding: 10;
+}
+
+.label-logo {
+    -fx-text-fill: #5091e6; /* Muted blue text */
+    -fx-font-size: 24px;
+    -fx-font-weight: bold;
+}
+
+/* Search field and button styles */
+.textfield-search {
+    -fx-background-color: #ffffff; /* White background */
+    -fx-border-radius: 10;
+    -fx-border-color: #c2b280; /* Light brown border */
     -fx-padding: 5;
+    -fx-font-size: 18px;
 }
 
-.hbox {
+.button-search {
+    -fx-background-color: #5091e6; /* Muted blue background */
+    -fx-text-fill: #ffffff; /* White text */
+    -fx-border-radius: 10;
+    -fx-padding: 5;
+    -fx-font-size: 16px;
+    -fx-cursor: hand; /* Hand cursor */
+}
+
+.button-search:hover {
+    -fx-background-color: #3e77b3; /* Darker blue on hover */
+}
+
+.button-search:pressed {
+    -fx-background-color: #2d5b8f; /* Even darker blue on press */
+}
+
+/* Cart and invoice styles */
+.pane-cart {
+    -fx-padding: 10;
+    -fx-alignment: center;
+}
+
+.image-cart {
+    -fx-cursor: hand;
+}
+
+.label-cart {
+    -fx-text-fill: #5091e6; /* Muted blue text */
+}
+
+/* Media box styles */
+.vbox-media {
+    -fx-background-color: #ffffff; /* White background */
+    -fx-border-color: #5091e6; /* Muted blue border */
+    -fx-border-radius: 10;
     -fx-padding: 10;
 }
 
-.vbox {
+/* Footer and button styles */
+.button-footer {
+    -fx-background-color: #5091e6; /* Muted blue background */
+    -fx-text-fill: #ffffff; /* White text */
+    -fx-border-radius: 10;
+    -fx-font-size: 16px;
+    -fx-font-family: "Segoe UI Bold";
+}
+
+.button-footer:hover {
+    -fx-background-color: #3e77b3; /* Darker blue on hover */
+}
+
+.button-footer:pressed {
+    -fx-background-color: #2d5b8f; /* Even darker blue on press */
+}
+
+.label-footer {
+    -fx-text-fill: #5091e6; /* Muted blue text */
+    -fx-font-size: 16px;
+}
+
+/* Specific styling for buttons */
+#btnPrevious, #btnNext {
+    -fx-background-color: #ccebff; /* Light blue background */
+    -fx-border-radius: 10;
+    -fx-text-fill: #5091e6; /* Muted blue text */
+    -fx-cursor: hand; /* Hand cursor */
+}
+
+#btnPrevious:hover, #btnNext:hover {
+    -fx-background-color: #b0daff; /* Darker blue on hover */
+}
+
+#btnPrevious:pressed, #btnNext:pressed {
+    -fx-background-color: #89caff; /* Even darker blue on press */
+}
+
+#sortPriceButton {
+    -fx-background-color: #5091e6; /* Muted blue background */
+    -fx-text-fill: white; /* White text */
+    -fx-border-radius: 10;
+    -fx-font-family: "Segoe UI Bold";
+    -fx-font-size: 16px;
+    -fx-cursor: hand; /* Hand cursor */
+}
+
+#sortPriceButton:hover {
+    -fx-background-color: #3e77b3; /* Darker blue on hover */
+}
+
+#sortPriceButton:pressed {
+    -fx-background-color: #2d5b8f; /* Even darker blue on press */
+}
+
+/* Additional styling for media content */
+.hbox-media {
     -fx-padding: 10;
 }
 
-.pane {
+/* Custom style class for alignment and padding */
+.pane-content {
     -fx-padding: 10;
+    -fx-alignment: center;
 }

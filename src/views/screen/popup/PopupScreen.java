@@ -14,7 +14,7 @@ import java.io.IOException;
 
 
 public class PopupScreen extends BaseScreenHandler{
-
+    
 
     @FXML
     ImageView tickicon;
@@ -22,7 +22,7 @@ public class PopupScreen extends BaseScreenHandler{
     @FXML
     Label message;
 
-
+    
     public PopupScreen(Stage stage) throws IOException{
         super(stage, Configs.POPUP_PATH);
     }

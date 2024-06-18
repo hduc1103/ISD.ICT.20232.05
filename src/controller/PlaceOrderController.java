@@ -6,8 +6,6 @@ import entity.invoice.Invoice;
 import entity.media.Media;
 import entity.order.Order;
 import entity.order.OrderMedia;
-import subsystem.InterbankInterface;
-import subsystem.InterbankSubsystem;
 
 import java.io.IOException;
 import java.sql.SQLException;
@@ -16,7 +14,6 @@ import java.util.logging.Logger;
 
 public class PlaceOrderController extends BaseController{
 
-    private InterbankInterface interbankInterface;
     /**
      * Just for logging purpose
      */
@@ -53,10 +50,9 @@ public class PlaceOrderController extends BaseController{
      * @return Invoice
      */
     public Invoice createInvoice(Order order) throws SQLException {
-        this.interbankInterface = new InterbankSubsystem();
-        String id = this.interbankInterface.getUrlPayOrder(order.getAmount() + calculateShippingFee(order));
-        //System.out.println(id);
-        Invoice invoice = new Invoice(order, id);
+        //this.interbankInterface = new InterbankSubsystem();
+        //String id = this.interbankInterface.getUrlPayOrder(order.getAmount() + calculateShippingFee(order));
+        Invoice invoice = new Invoice(order);
         invoice.saveInvoice();
         return invoice;
     }
@@ -86,15 +82,5 @@ public class PlaceOrderController extends BaseController{
         int fees = 25;
         LOGGER.info("Order Amount: " + order.getAmount() + " -- Shipping Fees: " + fees);
         return fees;
-    }
-
-    private double maxWeigh(Order order){
-        double max = 0;
-        for(Object object: order.getlstOrderMedia()){
-            OrderMedia orderMedia = (OrderMedia) object;
-            Media media = (Media) orderMedia.getMedia();
-            max = Math.max(max, media.getWeight());
-        }
-        return max;
     }
 }

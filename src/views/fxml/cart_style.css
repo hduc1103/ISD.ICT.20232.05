@@ -1,0 +1,33 @@
+
+.button:hover {
+    -fx-background-color: #a3d8ff;
+}
+
+.image-view:hover {
+    -fx-opacity: 0.8;
+}
+
+/* Rounded corners and padding for buttons */
+.button {
+    -fx-border-radius: 10;
+    -fx-padding: 10;
+}
+
+/* Padding for labels and containers */
+.label {
+    -fx-padding: 10;
+}
+
+.hbox {
+    -fx-padding: 10;
+}
+
+.vbox {
+    -fx-padding: 10;
+}
+
+.scroll-pane {
+    -fx-background-color: #ffffff;
+    -fx-border-radius: 10;
+    -fx-padding: 10;
+}

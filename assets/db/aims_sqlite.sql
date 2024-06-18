@@ -1,9 +1,3 @@
--- Creator:       MySQL Workbench 8.0.21/ExportSQLite Plugin 0.1.0
--- Author:        nguyennhudai
--- Caption:       New Model
--- Project:       Name of the project
--- Changed:       2020-11-07 23:28
--- Created:       2020-11-01 21:55
 PRAGMA foreign_keys = OFF;
 
 -- Schema: aims

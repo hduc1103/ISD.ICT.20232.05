@@ -1,0 +1,43 @@
+/* General styles */
+.white-bg {
+    -fx-background-color: #F4F1E6; /* Soft beige background for a calm look */
+}
+
+.form-pane {
+    -fx-background-color: #FFFFFF; /* White background for form panels */
+    -fx-border-color: #C2B280;     /* Soft brown for border */
+    -fx-border-radius: 10;
+    -fx-background-radius: 10;
+    -fx-padding: 20;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.15), 10, 0.5, 0.0, 0.0);
+}
+
+.circle-avatar {
+    -fx-fill: #4B5320; /* Dark green for the circle avatar */
+    -fx-stroke: #C2B280; /* Matching soft brown stroke */
+    -fx-stroke-width: 2;
+}
+
+.textfield {
+    -fx-background-color: #E8E8E8; /* Light gray for text fields */
+    -fx-background-radius: 5;
+    -fx-border-color: #C2B280; /* Soft brown for border */
+    -fx-border-radius: 5;
+    -fx-padding: 0 10;
+}
+
+.btn {
+    -fx-background-color: #4B5320; /* Dark green for buttons */
+    -fx-text-fill: #FFFFFF;        /* White text on buttons */
+    -fx-background-radius: 5;
+    -fx-font-size: 16px;
+    -fx-cursor: hand;
+}
+
+.btn:hover {
+    -fx-background-color: #3E4423; /* Slightly darker green on hover */
+}
+
+.btn:pressed {
+    -fx-background-color: #343D1B; /* Even darker green when pressed */
+}

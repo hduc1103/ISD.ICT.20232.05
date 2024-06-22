@@ -217,6 +217,20 @@ public class Media {
             ", type='" + type + "'" +
             ", imageURL='" + imageURL + "'" +
             "}";
-    }    
+    }
+
+    public void updateMediaDetails(int id, String title, String category, int price, int quantity) throws SQLException {
+        String sql = "UPDATE Media SET title = ?, category = ?, price = ?, quantity = ? WHERE id = ?";
+        try (PreparedStatement stmt = AIMSDB.getConnection().prepareStatement(sql)) {
+            stmt.setString(1, title);
+            stmt.setString(2, category);
+            stmt.setInt(3, price);
+            stmt.setInt(4, quantity);
+            stmt.setInt(5, id);
+            stmt.executeUpdate();
+        } catch (SQLException e) {
+            throw new SQLException("Error updating media details", e);
+        }
+    }
 
 }

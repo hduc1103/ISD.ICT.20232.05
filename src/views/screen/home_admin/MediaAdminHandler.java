@@ -128,14 +128,43 @@ public class MediaAdminHandler extends FXMLScreenHandler {
     private void handleUpdateItem() throws SQLException {
         if (adminCRUDController == null) adminCRUDController = new AdminCRUDController();
 
+        // New title
+        TextInputDialog titleDialog = new TextInputDialog(mediaTitle.getText());
+        titleDialog.setTitle("Update Media Title");
+        titleDialog.setHeaderText("Enter new title for the media:");
+        titleDialog.setContentText("Title:");
+
+        Optional<String> titleResult = titleDialog.showAndWait();
+        if (titleResult.isEmpty() || titleResult.get().isEmpty()) {
+            return;
+        }
+
+        // New category
+        TextInputDialog categoryDialog = new TextInputDialog(media.getCategory());
+        categoryDialog.setTitle("Update Media Category");
+        categoryDialog.setHeaderText("Enter new category for the media:");
+        categoryDialog.setContentText("Category:");
+
+        Optional<String> categoryResult = categoryDialog.showAndWait();
+        if (categoryResult.isEmpty() || categoryResult.get().isEmpty()) {
+            return;
+        }
+
         // New price
         TextInputDialog priceDialog = new TextInputDialog(mediaPrice.getText());
         priceDialog.setTitle("Update Media Price");
-        priceDialog.setHeaderText("Enter new price for the media:");
+        priceDialog.setHeaderText("Enter new price for the media (integer value):");
         priceDialog.setContentText("Price:");
 
         Optional<String> priceResult = priceDialog.showAndWait();
         if (priceResult.isEmpty() || priceResult.get().isEmpty()) {
+            return;
+        }
+        int newPrice;
+        try {
+            newPrice = Integer.parseInt(priceResult.get());
+        } catch (NumberFormatException e) {
+            LOGGER.severe("Invalid input for price: " + e.getMessage());
             return;
         }
 
@@ -149,16 +178,35 @@ public class MediaAdminHandler extends FXMLScreenHandler {
         if (availResult.isEmpty() || availResult.get().isEmpty()) {
             return;
         }
+        int newQuantity;
+        try {
+            newQuantity = Integer.parseInt(availResult.get());
+        } catch (NumberFormatException e) {
+            LOGGER.severe("Invalid input for quantity: " + e.getMessage());
+            return;
+        }
 
         // Confirm box
         int response = JOptionPane.showConfirmDialog(null, "Do you want to update the media details?", "Confirm Update",
                 JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
 
         if (response == JOptionPane.YES_OPTION) {
-            adminCRUDController.changeQuantity(media.getId(), Integer.parseInt(priceResult.get()));
-            adminCRUDController.changePrice(media.getId(), Integer.parseInt(priceResult.get()));
+            // Update the media with new values
+            media.setTitle(titleResult.get());
+            media.setCategory(categoryResult.get());
+            media.setPrice(newPrice);
+            media.setQuantity(newQuantity);
+
+            // Perform the update in the database
+            adminCRUDController.updateMedia(media.getId(), titleResult.get(), categoryResult.get(),
+                    newPrice, newQuantity);
+
+            // Refresh the media info on the UI
+            setMediaInfo();
         }
 
         home.refreshMediaList();
     }
+
+
 }

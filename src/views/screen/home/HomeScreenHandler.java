@@ -109,19 +109,6 @@ public class HomeScreenHandler extends BaseScreenHandler implements Initializabl
         }
     }
 
-//    @FXML
-//    public void handleSignOutButton(ActionEvent event) {
-//        SessionManager.setLoggedIn(false);
-//        HomeScreenHandler homeHandler = null;
-//        try {
-//            homeHandler = new HomeScreenHandler(stage, Configs.LOGIN_SIGNUP_PATH);
-//            homeHandler.setImage();
-//            homeHandler.show();
-//        } catch (IOException e) {
-//            throw new RuntimeException(e);
-//        }
-//    }
-
     @FXML
     public void showPreviousMedia(MouseEvent event) {
         if (currentPage > 0) {

@@ -10,17 +10,13 @@ import java.util.Random;
 
 import entity.db.AIMSDB;
 
-/**
- * The general media class, for another media it can be done by inheriting this class
- * @author nguyendai
- */
 public class Media {
     protected Statement stm;
     protected int id;
     protected String title;
     protected String category;
-    protected int value; // the real price of product (eg: 450)
-    protected int price; // the price which will be displayed on browser (eg: 500)
+    protected int value;
+    protected int price;
     protected int quantity;
     protected String type;
     protected String imageURL;
@@ -57,22 +53,23 @@ public class Media {
         return updated_quantity;
     }
 
-    public Media getMediaById(int id) throws SQLException{
-        String sql = "SELECT * FROM Media";
+    public Media getMediaById(int id) throws SQLException {
+        String sql = "SELECT * FROM Media WHERE id = " + id;
         Statement stm = AIMSDB.getConnection().createStatement();
         ResultSet res = stm.executeQuery(sql);
-		if(res.next()) {
+        if (res.next()) {
             return new Media()
-                .setId(res.getInt("id"))
-                .setTitle(res.getString("title"))
-                .setQuantity(res.getInt("quantity"))
-                .setCategory(res.getString("category"))
-                .setMediaURL(res.getString("imageUrl"))
-                .setPrice(res.getInt("price"))
-                .setType(res.getString("type"));
+                    .setId(res.getInt("id"))
+                    .setTitle(res.getString("title"))
+                    .setQuantity(res.getInt("quantity"))
+                    .setCategory(res.getString("category"))
+                    .setMediaURL(res.getString("imageUrl"))
+                    .setPrice(res.getInt("price"))
+                    .setType(res.getString("type"));
         }
         return null;
     }
+
 
     public List<Media> getAllMedia() throws SQLException{
         Statement stm = AIMSDB.getConnection().createStatement();
@@ -98,9 +95,9 @@ public class Media {
         if (value instanceof String){
             value = "\"" + value + "\"";
         }
-
-        stm.executeUpdate(" update " + tableName + " set " + field + "=" + value + " where id=" + id);
+        stm.executeUpdate("update " + tableName + " set " + field + "=" + value + " where id=" + id);
     }
+
 
     public void addNewMedia(String title, String type, String category, String imgUrl, double price, int quantity) throws SQLException {
         String sql = "insert into Media (title, type, category, imageUrl, price, quantity) values (?, ?, ?, ?, ?, ?)";

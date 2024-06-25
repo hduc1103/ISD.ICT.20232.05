@@ -41,6 +41,7 @@ public class AdminCRUDController extends BaseController {
     public void approveInvoice(Boolean approved) throws SQLException {
     }
     public void updateMedia(int id, String title, String category, int price, int quantity) throws SQLException {
+        Media media = new Media();
         media.updateMediaDetails(id, title, category, price, quantity);
     }
 }

@@ -17,7 +17,7 @@ public class CartMedia {
         this.quantity = quantity;
         this.price = price;
     }
-    
+
     public Media getMedia() {
         return this.media;
     }

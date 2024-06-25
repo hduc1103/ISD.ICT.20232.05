@@ -25,7 +25,7 @@ public class VnPaySubsystemController {
         String vnp_Version = "2.1.0";
         String vnp_Command = "pay";
         String orderType = "other";
-        long amount = money * 100L * 1000;
+        long amount = money * 100L;
 
 
         String vnp_TxnRef = VnPayConfig.getRandomNumber(8);

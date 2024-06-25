@@ -26,7 +26,8 @@
                         </Label>
                         <TextField fx:id="login_username" layoutX="87.0" layoutY="200.0" prefHeight="42.0" prefWidth="290.0" promptText="Username" styleClass="textfield" />
                         <PasswordField fx:id="login_password" layoutX="87.0" layoutY="260.0" prefHeight="42.0" prefWidth="290.0" promptText="Password" styleClass="textfield" />
-                        <CheckBox fx:id="login_selectshowPassword" layoutX="106.0" layoutY="320.0" mnemonicParsing="false" text="Show Password" />
+                        <TextField fx:id="login_showPassword" layoutX="87.0" layoutY="260.0" prefHeight="42.0" prefWidth="290.0" promptText="Password" styleClass="textfield" visible="false" />
+                        <CheckBox fx:id="login_selectshowPassword" layoutX="106.0" layoutY="320.0" mnemonicParsing="false" text="Show Password" onAction="#showPassword"/>
                         <Button fx:id="login_btn" layoutX="87.0" layoutY="360.0" mnemonicParsing="false" onAction="#login" prefHeight="42.0" prefWidth="290.0" styleClass="btn" text="Login" />
                         <Label layoutX="152.0" layoutY="500.0" text="Register Account">
                             <font>
@@ -38,13 +39,14 @@
                                 <Font size="20.0" />
                             </font>
                         </Button>
-                  <ImageView fitHeight="128.0" fitWidth="112.0" layoutX="177.0" layoutY="24.0" pickOnBounds="true" preserveRatio="true">
-                     <image>
-                        <Image url="@login_icon.png" />
-                     </image>
-                  </ImageView>
+                        <ImageView fitHeight="128.0" fitWidth="112.0" layoutX="177.0" layoutY="24.0" pickOnBounds="true" preserveRatio="true">
+                            <image>
+                                <Image url="@login_icon.png" />
+                            </image>
+                        </ImageView>
                     </children>
                 </AnchorPane>
+
 
                 <!-- Signup Form -->
                 <AnchorPane fx:id="signup_form" layoutX="14.0" layoutY="14.0" prefHeight="627.0" prefWidth="466.0" styleClass="form-pane" visible="false">

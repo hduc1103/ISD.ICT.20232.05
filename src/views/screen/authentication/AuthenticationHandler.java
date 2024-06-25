@@ -20,6 +20,7 @@ import javafx.scene.control.PasswordField;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 import utils.Configs;
+import views.screen.SessionManager;
 import views.screen.home.HomeScreenHandler;
 import views.screen.home_admin.AdminHomeScreenHandler;
 
@@ -93,18 +94,21 @@ public class AuthenticationHandler implements Initializable {
                 } else {
                     Stage stage = (Stage) login_btn.getScene().getWindow();
                     if (user.getId() != 0) {
+                        SessionManager.setLoggedIn(true);
                         HomeScreenHandler homeHandler = new HomeScreenHandler(stage, Configs.HOME_PATH);
-                        homeHandler.setScreenTitle("Home Screen");
+                        homeHandler.setScreenTitle("Home Screen Customer");
                         homeHandler.setImage();
                         homeHandler.show();
                     } else {
+                        SessionManager.setLoggedIn(true);
                         AdminHomeScreenHandler homeHandler = new AdminHomeScreenHandler(stage, Configs.HOME_ADMIN_PATH);
-                        homeHandler.setScreenTitle("Home Screen");
+                        homeHandler.setScreenTitle("Home Screen Admin");
                         homeHandler.setImage();
                         homeHandler.show();
                     }
                 }
             } catch (Exception e) {
+                e.printStackTrace();
                 System.out.println("Login error: " + e.getMessage());
             }
         }
@@ -120,7 +124,7 @@ public class AuthenticationHandler implements Initializable {
                 || signup_password.getText().isEmpty() || signup_cPassword.getText().isEmpty()) {
             alert.errorMessage("All fields are neccessary to be filled !");
         } // Check matched password
-        else if (Objects.equals(signup_cPassword.getText(), signup_password.getText())) {
+        else if (!Objects.equals(signup_cPassword.getText(), signup_password.getText())) {
             alert.errorMessage("Password does not match !");
         } // Check password length
         else if (signup_password.getText().length() < 8) {
@@ -182,4 +186,3 @@ public class AuthenticationHandler implements Initializable {
     }
 
 }
-

@@ -79,7 +79,7 @@ public class PlaceOrderController extends BaseController{
         HashMap<String, String> deliveryInfo = order.getDeliveryInfo();
         String province = "";
         if(deliveryInfo.get("province") != null) province = deliveryInfo.get("province");
-        int fees = 25;
+        int fees = 25000;
         LOGGER.info("Order Amount: " + order.getAmount() + " -- Shipping Fees: " + fees);
         return fees;
     }

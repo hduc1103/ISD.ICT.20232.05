@@ -83,6 +83,7 @@ public class MediaAdminHandler extends FXMLScreenHandler {
     }
 
     private void setMediaInfo() throws SQLException {
+        System.out.println("Setting media info for: " + media.getTitle() + ", Quantity: " + media.getQuantity());
         // set the cover image of media
         File file = new File(media.getImageURL());
         Image image = new Image(file.toURI().toString());
@@ -128,7 +129,9 @@ public class MediaAdminHandler extends FXMLScreenHandler {
     private void handleUpdateItem() throws SQLException {
         if (adminCRUDController == null) adminCRUDController = new AdminCRUDController();
 
-        // New title
+        // Gather new details from user input
+        // (Assume the dialogs are correctly implemented as in your provided code)
+
         TextInputDialog titleDialog = new TextInputDialog(mediaTitle.getText());
         titleDialog.setTitle("Update Media Title");
         titleDialog.setHeaderText("Enter new title for the media:");
@@ -139,7 +142,6 @@ public class MediaAdminHandler extends FXMLScreenHandler {
             return;
         }
 
-        // New category
         TextInputDialog categoryDialog = new TextInputDialog(media.getCategory());
         categoryDialog.setTitle("Update Media Category");
         categoryDialog.setHeaderText("Enter new category for the media:");
@@ -150,7 +152,6 @@ public class MediaAdminHandler extends FXMLScreenHandler {
             return;
         }
 
-        // New price
         TextInputDialog priceDialog = new TextInputDialog(mediaPrice.getText());
         priceDialog.setTitle("Update Media Price");
         priceDialog.setHeaderText("Enter new price for the media (integer value):");
@@ -168,7 +169,6 @@ public class MediaAdminHandler extends FXMLScreenHandler {
             return;
         }
 
-        // New quantity
         TextInputDialog availDialog = new TextInputDialog(mediaAvail.getText());
         availDialog.setTitle("Update Media Availability");
         availDialog.setHeaderText("Enter new availability for the media:");
@@ -186,12 +186,10 @@ public class MediaAdminHandler extends FXMLScreenHandler {
             return;
         }
 
-        // Confirm box
         int response = JOptionPane.showConfirmDialog(null, "Do you want to update the media details?", "Confirm Update",
                 JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
 
         if (response == JOptionPane.YES_OPTION) {
-            // Update the media with new values
             media.setTitle(titleResult.get());
             media.setCategory(categoryResult.get());
             media.setPrice(newPrice);
@@ -207,6 +205,5 @@ public class MediaAdminHandler extends FXMLScreenHandler {
 
         home.refreshMediaList();
     }
-
 
 }

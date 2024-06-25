@@ -297,7 +297,25 @@ public class AdminHomeScreenHandler extends BaseScreenAdminHandler implements In
         label.setText(text);
         label.setTextAlignment(TextAlignment.RIGHT);
         menuItem.setGraphic(label);
+        switch (text) {
+            case "<20đ":
+                label.setText("<20,000đ");
+                break;
+            case "20đ-50đ":
+                label.setText("20,000đ-50,000đ");
+                break;
+            case "50đ-100đ":
+                label.setText("50,000đ-100,000đ");
+                break;
+            case ">100đ":
+                label.setText(">100,000đ");
+                break;
+            default:
+                label.setText(text);
+        }
 
+        label.setTextAlignment(TextAlignment.RIGHT);
+        menuItem.setGraphic(label);
         // Set action
         menuItem.setOnAction(e -> {
             // empty home media
@@ -314,21 +332,21 @@ public class AdminHomeScreenHandler extends BaseScreenAdminHandler implements In
                     filteredItems.add(media);
                 }else{
                     if (text.equals("<20đ")) {
-                        if (media.getMedia().getPrice() < 20) {
+                        if (media.getMedia().getPrice() < 20000) {
                             filteredItems.add(media);
                         }
 
                     } else if (text.equals("20đ-50đ")) {
-                        if (media.getMedia().getPrice() >= 20 && media.getMedia().getPrice() < 50) {
+                        if (media.getMedia().getPrice() >= 20000 && media.getMedia().getPrice() < 50000) {
                             filteredItems.add(media);
                         }
                     } else if (text.equals("50đ-100đ")) {
-                        if (media.getMedia().getPrice() >= 50 && media.getMedia().getPrice() <= 100) {
+                        if (media.getMedia().getPrice() >= 50000 && media.getMedia().getPrice() <= 100000) {
                             filteredItems.add(media);
                         }
                     }
                     else if (text.equals(">100đ")) {
-                        if (media.getMedia().getPrice() > 100) {
+                        if (media.getMedia().getPrice() > 100000) {
                             filteredItems.add(media);
                         }
                     }

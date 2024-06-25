@@ -223,6 +223,15 @@ public class HomeScreenHandler extends BaseScreenHandler implements Initializabl
                 ex.printStackTrace();
             }
         });
+
+        // Initialize the SplitMenuButton with search options
+        addMenuItem(0, "Book", splitMenuBtnSearch);
+        addMenuItem(1, "DVD", splitMenuBtnSearch);
+        addMenuItem(2, "CD", splitMenuBtnSearch);
+        addMenuItem(3, "<20đ", splitMenuBtnSearch);
+        addMenuItem(4, "20đ-50đ", splitMenuBtnSearch);
+        addMenuItem(5, "50đ-100đ", splitMenuBtnSearch);
+        addMenuItem(6, ">100đ", splitMenuBtnSearch);
     }
 
     public void setImage() {
@@ -248,7 +257,25 @@ public class HomeScreenHandler extends BaseScreenHandler implements Initializabl
         label.setText(text);
         label.setTextAlignment(TextAlignment.RIGHT);
         menuItem.setGraphic(label);
+        switch (text) {
+            case "<20đ":
+                label.setText("<20,000đ");
+                break;
+            case "20đ-50đ":
+                label.setText("20,000đ-50,000đ");
+                break;
+            case "50đ-100đ":
+                label.setText("50,000đ-100,000đ");
+                break;
+            case ">100đ":
+                label.setText(">100,000đ");
+                break;
+            default:
+                label.setText(text); // For non-price categories like "Book", "DVD", etc.
+        }
 
+        label.setTextAlignment(TextAlignment.RIGHT);
+        menuItem.setGraphic(label);
         // Set action
         menuItem.setOnAction(e -> {
             // Filter items based on the selected category or price range
@@ -257,22 +284,22 @@ public class HomeScreenHandler extends BaseScreenHandler implements Initializabl
             switch (text) {
                 case "<20đ":
                     filteredItems = homeItems.stream()
-                            .filter(mh -> mh.getMedia().getPrice() < 20)
+                            .filter(mh -> mh.getMedia().getPrice() < 20000)
                             .collect(Collectors.toList());
                     break;
                 case "20đ-50đ":
                     filteredItems = homeItems.stream()
-                            .filter(mh -> mh.getMedia().getPrice() >= 20 && mh.getMedia().getPrice() < 50)
+                            .filter(mh -> mh.getMedia().getPrice() >= 20000 && mh.getMedia().getPrice() < 50000)
                             .collect(Collectors.toList());
                     break;
                 case "50đ-100đ":
                     filteredItems = homeItems.stream()
-                            .filter(mh -> mh.getMedia().getPrice() >= 50 && mh.getMedia().getPrice() <= 100)
+                            .filter(mh -> mh.getMedia().getPrice() >= 50000 && mh.getMedia().getPrice() <= 100000)
                             .collect(Collectors.toList());
                     break;
                 case ">100đ":
                     filteredItems = homeItems.stream()
-                            .filter(mh -> mh.getMedia().getPrice() > 100)
+                            .filter(mh -> mh.getMedia().getPrice() > 100000)
                             .collect(Collectors.toList());
                     break;
                 default:

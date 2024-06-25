@@ -12,8 +12,7 @@ import views.screen.home.HomeScreenHandler;
 import java.io.IOException;
 
 public class ResultScreenHandler extends BaseScreenHandler {
-	//Data Coupling
-	public ResultScreenHandler(Stage stage, String screenPath, String result, String message, String id, String bkcode, String transid, String am, String transstatus, String transdate) throws IOException {
+		public ResultScreenHandler(Stage stage, String screenPath, String result, String message, String id, String bkcode, String transid, String am, String transstatus, String transdate) throws IOException {
 		super(stage, screenPath);
 		resultLabel.setText(result);
 		messageLabel.setText(message);

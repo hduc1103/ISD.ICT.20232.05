@@ -1,34 +1,24 @@
 package controller;
 
 import entity.cart.Cart;
-import subsystem.VnPayInterface;
-import subsystem.VnPaySubsystem;
+import subsystem.PaymentStrategy;
 
-
-/**
- * This {@code PaymentController} class control the flow of the payment process
- * in our AIMS Software.
- *
- * @author hieud
- *
- */
 public class PaymentController extends BaseController {
+	private PaymentStrategy paymentStrategy;
 
-	/**
-	 * Represent the Interbank subsystem
-	 *
-	 */
-	private VnPayInterface vnPayService;
-	public PaymentController() {
-		vnPayService = new VnPaySubsystem();
+	public PaymentController(PaymentStrategy paymentStrategy) {
+		this.paymentStrategy = paymentStrategy;
 	}
+
 	public String getUrlPay(int amount, String content) {
-		var url = vnPayService.generatePayUrl(amount, content);
-		return url;
+		return paymentStrategy.generatePayUrl(amount, content);
 	}
 
-	public void emptyCart(){
-		//Content Coupling
+	public void emptyCart() {
 		Cart.getCart().emptyCart();
+	}
+
+	public void setPaymentStrategy(PaymentStrategy paymentStrategy) {
+		this.paymentStrategy = paymentStrategy;
 	}
 }

@@ -1,22 +1,11 @@
-
 package views.screen.authentication;
 
 import controller.AuthenticationController;
 import entity.user.User;
 import javafx.event.ActionEvent;
-import javafx.scene.control.TextField;
-
-import java.io.IOException;
-import java.net.URL;
-import java.sql.*;
-import java.util.Objects;
-import java.util.ResourceBundle;
-
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.Button;
-import javafx.scene.control.CheckBox;
-import javafx.scene.control.PasswordField;
+import javafx.scene.control.*;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 import utils.Configs;
@@ -24,12 +13,14 @@ import views.screen.SessionManager;
 import views.screen.home.HomeScreenHandler;
 import views.screen.home_admin.AdminHomeScreenHandler;
 
+import java.io.IOException;
+import java.net.URL;
+import java.sql.SQLException;
+import java.util.Objects;
+import java.util.ResourceBundle;
 
 public class AuthenticationHandler implements Initializable {
 
-    /**
-     * Initializes the controller class.
-     */
     @FXML
     private Button login_btn;
 
@@ -88,19 +79,21 @@ public class AuthenticationHandler implements Initializable {
 
         } else {
             try {
-                User user = authenticationController.loginWithUsernameAndPassword(login_username.getText(), login_password.getText());
+                String password = login_selectshowPassword.isSelected() ? login_showPassword.getText() : login_password.getText();
+                User user = authenticationController.loginWithUsernameAndPassword(login_username.getText(), password);
                 if (user == null) {
                     alert.errorMessage("Incorrect Username/Password");
                 } else {
+                    SessionManager.setLoggedIn(true);
+                    SessionManager.setUserId(user.getId()); // Store userId in session
+
                     Stage stage = (Stage) login_btn.getScene().getWindow();
                     if (user.getId() != 0) {
-                        SessionManager.setLoggedIn(true);
                         HomeScreenHandler homeHandler = new HomeScreenHandler(stage, Configs.HOME_PATH);
                         homeHandler.setScreenTitle("Home Screen Customer");
                         homeHandler.setImage();
                         homeHandler.show();
                     } else {
-                        SessionManager.setLoggedIn(true);
                         AdminHomeScreenHandler homeHandler = new AdminHomeScreenHandler(stage, Configs.HOME_ADMIN_PATH);
                         homeHandler.setScreenTitle("Home Screen Admin");
                         homeHandler.setImage();
@@ -122,19 +115,19 @@ public class AuthenticationHandler implements Initializable {
         // Check for empty fields
         if (signup_email.getText().isEmpty() || signup_username.getText().isEmpty()
                 || signup_password.getText().isEmpty() || signup_cPassword.getText().isEmpty()) {
-            alert.errorMessage("All fields are neccessary to be filled !");
+            alert.errorMessage("All fields are necessary to be filled!");
         } // Check matched password
         else if (!Objects.equals(signup_cPassword.getText(), signup_password.getText())) {
-            alert.errorMessage("Password does not match !");
+            alert.errorMessage("Password does not match!");
         } // Check password length
         else if (signup_password.getText().length() < 8) {
-            alert.errorMessage("Invalid Password, at least 8 characters or more !");
+            alert.errorMessage("Invalid Password, at least 8 characters or more!");
         } else {
             int result = authenticationController.registerNewUser(signup_email.getText(), signup_username.getText(), signup_password.getText());
             if (result == 0) {
                 alert.errorMessage(signup_username.getText() + " is already existed or some error had happened");
             } else {
-                alert.successMessage("Registered Successfully !!");
+                alert.successMessage("Registered Successfully!!");
                 clearRegisterField();
 
                 signup_form.setVisible(false);
@@ -150,14 +143,11 @@ public class AuthenticationHandler implements Initializable {
         signup_password.setText("");
     }
 
-    //Chuyển màn hình code tại đây !!
     public void switchForm(ActionEvent e) {
         if (e.getSource() == signup_loginAccount) {
-            //Chuyển màn từ đăng kí sang đăng nhập
             signup_form.setVisible(false);
             login_form.setVisible(true);
         } else if (e.getSource() == login_createAccount) {
-            //Chuyển màn từ đăng nhập sang đăng kí
             signup_form.setVisible(true);
             login_form.setVisible(false);
         }
@@ -184,5 +174,4 @@ public class AuthenticationHandler implements Initializable {
     public void initialize(URL url, ResourceBundle rb) {
         openApp();
     }
-
 }

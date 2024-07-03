@@ -6,6 +6,7 @@ import entity.invoice.Invoice;
 import entity.media.Media;
 import entity.order.Order;
 import entity.order.OrderMedia;
+import utils.Configs;
 
 import java.io.IOException;
 import java.sql.SQLException;
@@ -49,11 +50,11 @@ public class PlaceOrderController extends BaseController{
      * @param order
      * @return Invoice
      */
-    public Invoice createInvoice(Order order) throws SQLException {
+    public Invoice createInvoice(Order order, int userId) throws SQLException {
         //this.interbankInterface = new InterbankSubsystem();
         //String id = this.interbankInterface.getUrlPayOrder(order.getAmount() + calculateShippingFee(order));
         Invoice invoice = new Invoice(order);
-        invoice.saveInvoice();
+        invoice.saveInvoice(userId);
         return invoice;
     }
 
@@ -75,12 +76,13 @@ public class PlaceOrderController extends BaseController{
      * @param order
      * @return shippingFee
      */
-    public int calculateShippingFee(Order order){
-        HashMap<String, String> deliveryInfo = order.getDeliveryInfo();
-        String province = "";
-        if(deliveryInfo.get("province") != null) province = deliveryInfo.get("province");
-        int fees = 25000;
-        LOGGER.info("Order Amount: " + order.getAmount() + " -- Shipping Fees: " + fees);
-        return fees;
+    public int calculateShippingFee(Order order) {
+        String province = String.valueOf(order.getDeliveryInfo().get("province"));
+        boolean isRushOrder = order.getTypePayment().toLowerCase().equals("rush order");
+
+        if (Configs.PROVINCES_FREE_SHIP.contains(province)) {
+            return isRushOrder ? Configs.SHIPPING_FEES_RUSH_ORDER : 0;
+        }
+        return Configs.SHIPPING_FEES;
     }
 }

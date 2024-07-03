@@ -9,6 +9,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.List;
 
 public class User {
 
@@ -97,5 +99,27 @@ public class User {
         }
 
         return null;
+    }
+    public static boolean deleteUserById(int userId) throws SQLException {
+        String sql = "DELETE FROM User WHERE id = ?;";
+        PreparedStatement stm = AIMSDB.getConnection().prepareStatement(sql);
+        stm.setInt(1, userId);
+        int rowsAffected = stm.executeUpdate();
+        return rowsAffected > 0;
+    }
+
+    public static List<User> getAllUsers() throws SQLException {
+        List<User> users = new ArrayList<>();
+        String sql = "SELECT * FROM User";
+        Statement stm = AIMSDB.getConnection().createStatement();
+        ResultSet res = stm.executeQuery(sql);
+        while (res.next()) {
+            users.add(new User(res.getInt("id"),
+                    res.getString("name"),
+                    res.getString("email"),
+                    res.getString("address"),
+                    res.getString("phone")));
+        }
+        return users;
     }
 }

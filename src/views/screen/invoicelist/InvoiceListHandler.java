@@ -1,5 +1,6 @@
 package views.screen.invoicelist;
 
+import common.exception.ProcessInvoiceException;
 import controller.InvoiceListController;
 import entity.db.AIMSDB;
 import entity.invoice.Invoice;
@@ -18,6 +19,7 @@ import javafx.scene.image.ImageView;
 import javafx.stage.Stage;
 import utils.Configs;
 import views.screen.BaseScreenHandler;
+import views.screen.SessionManager;
 import views.screen.home.HomeScreenHandler;
 import views.screen.invoice.InvoiceDetailHandler;
 
@@ -31,7 +33,6 @@ import java.util.ArrayList;
 public class InvoiceListHandler extends BaseScreenHandler {
 
     private ArrayList<Invoice> dataInvoice;
-
     private HomeScreenHandler home;
 
     @FXML
@@ -60,8 +61,9 @@ public class InvoiceListHandler extends BaseScreenHandler {
 
     public InvoiceListHandler(Stage stage, String screenPath) throws IOException, SQLException {
         super(stage, screenPath);
+        int userId = (int) SessionManager.getUserId();
         CleanInvoiceList();
-        loadData();
+        loadData(userId);
 
         File file = new File("assets/images/Logo.png");
         Image im = new Image(file.toURI().toString());
@@ -81,7 +83,6 @@ public class InvoiceListHandler extends BaseScreenHandler {
         statusColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getStatus()));
         invoice_detail.setCellValueFactory(cellData -> {
             Button detailButton = createDetailButton(cellData.getValue());
-            //System.out.println(cellData.getValue());
             return new SimpleObjectProperty<>(detailButton);
         });
         invoice_detail.setCellFactory(col -> new TableCell<>() {
@@ -100,32 +101,26 @@ public class InvoiceListHandler extends BaseScreenHandler {
     private Button createDetailButton(Invoice invoice) {
         Button detailButton = new Button();
         detailButton.setText("Detail");
-//        String status = invoice.getStatus();
-
         detailButton.setOnMouseClicked(e -> {
             InvoiceDetailHandler invoiceDetailHandler;
             try {
-                //System.out.println(invoice.getId());
                 invoiceDetailHandler = new InvoiceDetailHandler(this.stage, invoice, Configs.INVOICE_DETAIL_PATH);
                 invoiceDetailHandler.requestToDetail(this);
                 invoiceDetailHandler.setHomeScreenHandler(this.homeScreenHandler);
-            } catch (IOException ex) {
-                throw new RuntimeException(ex);
-            } catch (SQLException ex) {
+            } catch (IOException | SQLException ex) {
                 throw new RuntimeException(ex);
             }
         });
-
         return detailButton;
     }
 
     private void populateTable() {
-        //Convert ArrayList to ObservableList and set it to the table
+        // Convert ArrayList to ObservableList and set it to the table
         ObservableList<Invoice> observableData = FXCollections.observableArrayList(dataInvoice);
         tableView.setItems(observableData);
     }
 
-    public InvoiceListController getBController(){
+    public InvoiceListController getBController() {
         return (InvoiceListController) super.getBController();
     }
 
@@ -135,11 +130,12 @@ public class InvoiceListHandler extends BaseScreenHandler {
         show();
     }
 
-    private void loadData() throws SQLException {
-        dataInvoice = Invoice.getListInvoice();
+    private void loadData(int userId) throws SQLException {
+        dataInvoice = Invoice.getListInvoiceByUserID(userId);
         initializeTableColumns();
         populateTable();
     }
+
     public void CleanInvoiceList() throws SQLException {
         String sql = "DELETE FROM Invoice WHERE VNPayId = ?;";
         Connection connection = AIMSDB.getConnection();
@@ -148,7 +144,6 @@ public class InvoiceListHandler extends BaseScreenHandler {
         try {
             preparedStatement = connection.prepareStatement(sql);
             preparedStatement.setString(1, "");
-            //preparedStatement.setString(2, "CREATED");
             res = preparedStatement.executeUpdate();
             preparedStatement.close();
         } catch (SQLException e) {

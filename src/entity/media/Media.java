@@ -85,7 +85,7 @@ public class Media {
 
         ArrayList<Media> items = _extractMediaFromResultSet(res);
         for (Media media : items) {
-            System.out.println(media.quantity);
+            System.out.println("quantity" + media.quantity);
         }
         return items;
     }

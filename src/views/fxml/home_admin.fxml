@@ -13,7 +13,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="788.0" prefWidth="1326.0" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="788.0" prefWidth="1326.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1">
     <children>
         <HBox prefHeight="104.0" prefWidth="1326.0" style="-fx-background-color: #ccebff; -fx-border-color: #33adff;">
             <children>
@@ -34,7 +34,7 @@
                         </Pane>
                     </children>
                 </VBox>
-                <HBox prefHeight="102.0" prefWidth="882.0">
+                <HBox prefHeight="102.0" prefWidth="942.0">
                     <children>
                         <Pane prefHeight="102.0" prefWidth="562.0">
                             <children>
@@ -47,8 +47,8 @@
                         </Pane>
                         <Pane prefHeight="102.0" prefWidth="158.0">
                             <children>
-                                <SplitMenuButton fx:id="splitMenuBtnSearch" layoutY="27.0" mnemonicParsing="false" onMouseClicked="#searchButtonClicked" prefHeight="48.0" prefWidth="124.0" text="Search">
-                                    <items>
+                                <SplitMenuButton fx:id="splitMenuBtnSearch" layoutY="27.0" mnemonicParsing="false" onMouseClicked="#handleSearchButtonClicked" prefHeight="48.0" prefWidth="124.0" style="-fx-background-color: #ccebff; -fx-border-radius: 10; -fx-padding: 5; -fx-cursor: hand;" text="Search">
+                                <items>
                                     </items>
                                     <font>
                                         <Font size="16.0" />
@@ -60,10 +60,11 @@
                 </HBox>
                 <VBox prefHeight="102.0" prefWidth="161.0">
                     <children>
-                        <Pane prefHeight="200.0" prefWidth="200.0">
+                        <Pane prefHeight="200.0" prefWidth="118.0">
                      <children>
-                        <Button fx:id="addItemBtn" layoutX="48.0" layoutY="14.0" mnemonicParsing="false" onAction="#handleAddItem" text="Add Item" />
-                        <Button fx:id="manageInvoiceBtn" layoutX="20.0" layoutY="63.0" mnemonicParsing="false" text="Manage Invoice List" />
+                        <Button fx:id="manageInvoiceBtn" layoutX="-44.0" layoutY="56.0" mnemonicParsing="false" text="Manage Invoice List" />
+                         <Button fx:id="manageUserBtn" layoutX="-23.0" layoutY="11.0" mnemonicParsing="false" text="Manage User" />
+                         <Button fx:id="addItemBtn" layoutX="-22.0" layoutY="90.0" mnemonicParsing="false" onAction="#handleAddItemClicked" prefHeight="23.0" prefWidth="72.0" text="Add Item" />
                      </children></Pane>
                     </children>
                 </VBox>

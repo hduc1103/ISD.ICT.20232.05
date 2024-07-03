@@ -1,7 +1,5 @@
 package subsystem;
 
-//import entity.payment.CreditCard;
-
 import entity.payment.PaymentTransaction;
 import entity.response.Response;
 import subsystem.vnPay.VnPaySubsystemController;
@@ -9,13 +7,14 @@ import subsystem.vnPay.VnPaySubsystemController;
 import java.io.IOException;
 import java.text.ParseException;
 
-public class VnPaySubsystem implements VnPayInterface {
+public class VnPayStrategy implements PaymentStrategy {
     private VnPaySubsystemController ctrl;
 
-    public VnPaySubsystem() {
+    public VnPayStrategy() {
         this.ctrl = new VnPaySubsystemController();
     }
 
+    @Override
     public String generatePayUrl(int amount, String contents) {
         try {
             return ctrl.generatePayOrderUrl(amount, contents);
@@ -26,6 +25,6 @@ public class VnPaySubsystem implements VnPayInterface {
 
     @Override
     public PaymentTransaction makePaymentTransaction(Response response) throws ParseException {
-            return ctrl.makePaymentTransaction(response);
+        return ctrl.makePaymentTransaction(response);
     }
 }

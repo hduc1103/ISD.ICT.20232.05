@@ -36,7 +36,7 @@ public class AuthenticationController extends  BaseController{
                 prepare.setString(1, email);
                 prepare.setString(2, name);
                 prepare.setString(3, password);
-                prepare.setString(4, "address");
+                prepare.setString(4, "Hoang Mai, Ha Noi");
                 prepare.setString(5, "0916891103");
                 prepare.executeUpdate();
 

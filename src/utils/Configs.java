@@ -3,30 +3,13 @@ package utils;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontPosture;
 import javafx.scene.text.FontWeight;
-/**
- * @author nguyenlm Contains the configs for AIMS Project
- */
+
+import java.util.HashSet;
+import java.util.Set;
+
+
 public class Configs {
 
-	// api constants
-	public static final String GET_BALANCE_URL = "https://ecopark-system-api.herokuapp.com/api/card/balance/118609_group1_2020";
-	public static final String GET_VEHICLECODE_URL = "https://ecopark-system-api.herokuapp.com/api/get-vehicle-code/1rjdfasdfas";
-	public static final String PROCESS_TRANSACTION_URL = "https://ecopark-system-api.herokuapp.com/api/card/processTransaction";
-	public static final String RESET_URL = "https://ecopark-system-api.herokuapp.com/api/card/reset";
-
-	// demo data
-	public static final String POST_DATA = "{"
-			+ " \"secretKey\": \"BUXj/7/gHHI=\" ,"
-			+ " \"transaction\": {"
-			+ " \"command\": \"pay\" ,"
-			+ " \"cardCode\": \"118609_group1_2020\" ,"
-			+ " \"owner\": \"Group 1\" ,"
-			+ " \"cvvCode\": \"185\" ,"
-			+ " \"dateExpried\": \"1125\" ,"
-			+ " \"transactionContent\": \"Pei debt\" ,"
-			+ " \"amount\": 50000 "
-			+ "}"
-		+ "}";
 	public static final String TOKEN = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiIxMTg2MDlfZ3JvdXAxXzIwMjAiLCJpYXQiOjE1OTkxMTk5NDl9.y81pBkM0pVn31YDPFwMGXXkQRKW5RaPIJ5WW5r9OW-Y";
 
 	// database Configs
@@ -56,6 +39,7 @@ public class Configs {
 	public static final String POPUP_PATH = "/views/fxml/popup.fxml";
 	public static final String INVOICE_LIST_PATH = "/views/fxml/invoice_list.fxml";
 	public static final String INVOICE_LIST_ADMIN_PATH = "/views/fxml/invoice_list_admin.fxml";
+	public static final String USER_LIST_PATH = "/views/fxml/user_list.fxml";
 
 	public static final String PAY_SCREEN_PATH = "/views/fxml/pay.fxml";
 
@@ -69,4 +53,14 @@ public class Configs {
 			"Phú Yên", "Quảng Nam", "Quảng Ngãi", "Đà Nẵng", "Bà Rịa-Vũng Tàu", "Bình Dương", "Bình Phước", "Đồng Nai",
 			"Tây Ninh", "Hồ Chí Minh", "An Giang", "Bạc Liêu", "Bến Tre", "Cà Mau", "Đồng Tháp", "Hậu Giang",
 			"Kiên Giang", "Long An", "Sóc Trăng", "Tiền Giang", "Trà Vinh", "Vĩnh Long", "Cần Thơ" };
+	public static int SHIPPING_FEES = 30000;
+	public static int SHIPPING_FEES_RUSH_ORDER = 20000;
+
+	public static final Set<String> PROVINCES_FREE_SHIP = new HashSet<>();
+
+	static {
+		// Thêm các tỉnh/thành có free ship
+		PROVINCES_FREE_SHIP.add("Hà Nội");
+		PROVINCES_FREE_SHIP.add("Hồ Chí Minh");
+	}
 }

@@ -19,6 +19,7 @@ import utils.Configs;
 import views.screen.BaseScreenHandler;
 import views.screen.invoice.InvoiceScreenHandler;
 import views.screen.popup.PopupScreen;
+import views.screen.SessionManager;
 
 import java.io.File;
 import java.io.IOException;
@@ -66,8 +67,8 @@ public class ShippingScreenHandler extends BaseScreenHandler implements Initiali
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
 		final BooleanProperty firstTime = new SimpleBooleanProperty(true); // Variable to store the focus on stage load
-		name.focusedProperty().addListener((observable,  oldValue,  newValue) -> {
-			if(newValue && firstTime.get()){
+		name.focusedProperty().addListener((observable, oldValue, newValue) -> {
+			if (newValue && firstTime.get()) {
 				content.requestFocus(); // Delegate the focus to container
 				firstTime.setValue(false); // Variable value changed for future references
 			}
@@ -77,12 +78,13 @@ public class ShippingScreenHandler extends BaseScreenHandler implements Initiali
 
 	@FXML
 	void submitDeliveryInfo(MouseEvent event) throws IOException, InterruptedException, SQLException {
-		HashMap messages = new HashMap<>();
+		HashMap<String, String> messages = new HashMap<>();
 		messages.put("name", name.getText());
 		messages.put("phone", phone.getText());
 		messages.put("address", address.getText());
 		messages.put("instructions", instructions.getText());
 		messages.put("province", province.getValue());
+
 		try {
 			// process and validate delivery info
 			getBController().processDeliveryInfo(messages);
@@ -90,32 +92,36 @@ public class ShippingScreenHandler extends BaseScreenHandler implements Initiali
 			PopupScreen.error(e.getMessage());
 			throw new InvalidDeliveryInfoException(e.getMessage());
 		}
+
 		// calculate shipping fees
 		order.setDeliveryInfo(messages);
-		if(order.getTypePayment().toLowerCase()=="rush order"){
+		if (order.getTypePayment().toLowerCase().equals("rush order")) {
 			String provincetmp = String.valueOf(order.getDeliveryInfo().get("province")).toLowerCase();
 			System.out.println(String.valueOf(order.getDeliveryInfo().get("province")).toLowerCase());
-			if(!provincetmp.equals("hà nội")) {
+			if (!provincetmp.equals("hà nội")) {
 				PopupScreen.error("Your address is not available for Rush order delivery!");
 				return;
 			}
 		}
+
 		int shippingFees = getBController().calculateShippingFee(order);
 		order.setShippingFees(shippingFees);
 		order.saveOrder();
+
+		// Retrieve userId from SessionManager
+		int userId = SessionManager.getUserId();
+
 		// create invoice screen
-		Invoice invoice = getBController().createInvoice(order);
-		BaseScreenHandler InvoiceScreenHandler = new InvoiceScreenHandler(this.stage, Configs.INVOICE_SCREEN_PATH, invoice);
-		InvoiceScreenHandler.setPreviousScreen(this);
-		InvoiceScreenHandler.setHomeScreenHandler(homeScreenHandler);
-		InvoiceScreenHandler.setScreenTitle("Invoice Screen");
-		InvoiceScreenHandler.setBController(getBController());
-		InvoiceScreenHandler.show();
+		Invoice invoice = getBController().createInvoice(order, userId);
+		BaseScreenHandler invoiceScreenHandler = new InvoiceScreenHandler(this.stage, Configs.INVOICE_SCREEN_PATH, invoice);
+		invoiceScreenHandler.setPreviousScreen(this);
+		invoiceScreenHandler.setHomeScreenHandler(homeScreenHandler);
+		invoiceScreenHandler.setScreenTitle("Invoice Screen");
+		invoiceScreenHandler.setBController(getBController());
+		invoiceScreenHandler.show();
 	}
 
-	public PlaceOrderController getBController(){
+	public PlaceOrderController getBController() {
 		return (PlaceOrderController) super.getBController();
 	}
-
-
 }

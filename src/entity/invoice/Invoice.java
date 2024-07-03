@@ -87,11 +87,11 @@ public class Invoice {
             }
         }
     }
-    public void saveInvoice() throws SQLException {
+    public void saveInvoice(int userId) throws SQLException {
         Connection connection = AIMSDB.getConnection();
         PreparedStatement preparedStatement = null;
         try {
-            String sql = "INSERT INTO `invoice` (orderId, amount, VNPayId, status) VALUES (?, ?, ?, ?)";
+            String sql = "INSERT INTO `invoice` (orderId, amount, VNPayId, status, user_id) VALUES (?, ?, ?, ?, ?)";
             preparedStatement = connection.prepareStatement(sql);
 
             // Giả sử getAmount() và getUrlPayOrder() trả về giá trị thích hợp
@@ -99,6 +99,8 @@ public class Invoice {
             preparedStatement.setDouble(2, this.getAmount()); // amount
             preparedStatement.setString(3, this.getPaypalId()); // paypalId
             preparedStatement.setString(4,this.getStatus()); // status
+            preparedStatement.setInt(5, userId); // orderId
+
             preparedStatement.executeUpdate();
 
             ResultSet generatedKeys = preparedStatement.getGeneratedKeys();
@@ -139,5 +141,21 @@ public class Invoice {
         }
         return invoices;
     }
-
+    public static ArrayList<Invoice> getListInvoiceByUserID(int userId) throws SQLException {
+        String sql = "SELECT * FROM Invoice WHERE user_id = ?";
+        Connection conn = AIMSDB.getConnection();
+        PreparedStatement preparedStatement = conn.prepareStatement(sql);
+        preparedStatement.setInt(1, userId);
+        ResultSet res = preparedStatement.executeQuery();
+        ArrayList<Invoice> invoices = new ArrayList<>();
+        while (res.next()) {
+            Invoice invoice = new Invoice();
+            invoice.setId(res.getInt("id"));
+            invoice.setAmount(res.getInt("amount"));
+            invoice.setPaypalId(res.getString("VNPayId"));
+            invoice.setStatus(res.getString("status"));
+            invoices.add(invoice);
+        }
+        return invoices;
+    }
 }

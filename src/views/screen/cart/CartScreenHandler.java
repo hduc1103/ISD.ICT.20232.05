@@ -5,7 +5,9 @@ import common.exception.PlaceOrderException;
 import controller.PlaceOrderController;
 import controller.ViewCartController;
 import entity.cart.CartMedia;
+import entity.media.Media;
 import entity.order.Order;
+import entity.order.OrderMedia;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -114,80 +116,56 @@ public class CartScreenHandler extends BaseScreenHandler {
 		displayCartWithMediaAvailability();
 		show();
 	}
-
 	public void requestToPlaceOrder() throws SQLException, IOException {
-		try {
-			// create placeOrderController and process the order
-			PlaceOrderController placeOrderController = new PlaceOrderController();
-			if (placeOrderController.getListCartMedia().size() == 0){
-				PopupScreen.error("You don't have anything to place");
-				return;
-			}
-			placeOrderController.placeOrder();
-			// display available media
-			displayCartWithMediaAvailability();
-			// create order
-			Order order = placeOrderController.createOrder();
-			//System.out.println(order.getID() + " " + order.getAmount() + " " +order.getlstOrderMedia());
-			order.setTypePayment("standard order");
-			System.out.println(order.toString());
-			// display shipping form
-			ShippingScreenHandler ShippingScreenHandler = new ShippingScreenHandler(this.stage, Configs.SHIPPING_SCREEN_PATH, order);
-			ShippingScreenHandler.setScreenTitle("Shipping Screen");
-			ShippingScreenHandler.setPreviousScreen(this);
-			ShippingScreenHandler.setHomeScreenHandler(homeScreenHandler);
-			File file = new File("assets/images/Logo.png");
-			Image im = new Image(file.toURI().toString());
-			aimsImage.setImage(im);
-			// on mouse clicked, we back to home
-			aimsImage.setOnMouseClicked(e -> {
-				setScreenTitle("Home screen");
-                this.getPreviousScreen().show();
-			});
-			ShippingScreenHandler.setBController(placeOrderController);
-			ShippingScreenHandler.show();
-		} catch (MediaNotAvailableException e) {
-			// if some media are not available then display cart and break usecase Place Order
-			displayCartWithMediaAvailability();
-		}
-
+		processOrder("standard order");
 	}
 	public void requestToPlaceRushOrder() throws SQLException, IOException {
+		processOrder("rush order");
+	}
+	private boolean isCartEmpty(PlaceOrderController controller) {
+		return controller.getListCartMedia().isEmpty();
+	}
+
+	private Order createOrderWithPaymentType(PlaceOrderController controller, String paymentType) throws SQLException, IOException {
+		Order order = controller.createOrder();
+		order.setTypePayment(paymentType);
+		return order;
+	}
+
+	private void processOrder(String orderType) throws SQLException, IOException {
 		try {
-			// create placeOrderController and process the order
 			PlaceOrderController placeOrderController = new PlaceOrderController();
-			if (placeOrderController.getListCartMedia().size() == 0){
+			if (isCartEmpty(placeOrderController)) {
 				PopupScreen.error("You don't have anything to place");
 				return;
 			}
+
 			placeOrderController.placeOrder();
-			// display available media
 			displayCartWithMediaAvailability();
-			// create order
-			Order order = placeOrderController.createOrder();
-			//System.out.println(order.getID() + " " + order.getAmount() + " " +order.getlstOrderMedia());
-			order.setTypePayment("rush order");
-			System.out.println(order.toString());
-			// display shipping form
-			ShippingScreenHandler ShippingScreenHandler = new ShippingScreenHandler(this.stage, Configs.SHIPPING_SCREEN_PATH, order);
-			ShippingScreenHandler.setScreenTitle("Shipping Screen");
-			ShippingScreenHandler.setPreviousScreen(this);
-			ShippingScreenHandler.setHomeScreenHandler(homeScreenHandler);
-			File file = new File("assets/images/Logo.png");
-			Image im = new Image(file.toURI().toString());
-			aimsImage.setImage(im);
-			// on mouse clicked, we back to home
-			aimsImage.setOnMouseClicked(e -> {
-				setScreenTitle("Home screen");
-				this.getPreviousScreen().show();
-			});
-			ShippingScreenHandler.setBController(placeOrderController);
-			ShippingScreenHandler.show();
+			Order order = createOrderWithPaymentType(placeOrderController, orderType);
+
+			if ("rush order".equals(orderType) && !isRushOrderSupported(order)) {
+				return;
+			}
+
+			displayShippingForm(order, placeOrderController);
 		} catch (MediaNotAvailableException e) {
-			// if some media are not available then display cart and break usecase Place Order
 			displayCartWithMediaAvailability();
 		}
+	}
 
+	private void displayShippingForm(Order order, PlaceOrderController placeOrderController) throws IOException {
+		ShippingScreenHandler shippingScreenHandler = new ShippingScreenHandler(this.stage, Configs.SHIPPING_SCREEN_PATH, order);
+		shippingScreenHandler.setScreenTitle("Shipping Screen");
+		shippingScreenHandler.setPreviousScreen(this);
+		shippingScreenHandler.setHomeScreenHandler(homeScreenHandler);
+		setImage(aimsImage, "assets/images/Logo.png");
+		aimsImage.setOnMouseClicked(e -> {
+			setScreenTitle("Home screen");
+			this.getPreviousScreen().show();
+		});
+		shippingScreenHandler.setBController(placeOrderController);
+		shippingScreenHandler.show();
 	}
 
 	public void updateCart() throws SQLException{
@@ -206,7 +184,29 @@ public class CartScreenHandler extends BaseScreenHandler {
 		labelVAT.setText(Utils.getCurrencyFormat(vat));
 		labelAmount.setText(Utils.getCurrencyFormat(amount));
 	}
+	private boolean isRushOrderSupported(Order order) {
+		StringBuilder unsupportedMediaNames = new StringBuilder();
+		for (Object item : order.getlstOrderMedia()) {
+			if (item instanceof OrderMedia) {
+				Media media = ((OrderMedia) item).getMedia();
+				if (!media.getIsSupportedPlaceRushOrder()) {
+					if (unsupportedMediaNames.length() > 0) {
+						unsupportedMediaNames.append(", ");
+					}
+					unsupportedMediaNames.append(media.getTitle());
+				}
+			}
+		}
 
+		if (unsupportedMediaNames.length() > 0) {
+			try {
+				PopupScreen.error("The following items in your cart do not support Rush order delivery: " + unsupportedMediaNames);
+			} catch (IOException ex) {
+			}
+			return false;
+		}
+		return true;
+	}
 	private void displayCartWithMediaAvailability(){
 		// clear all old cartMedia
 		vboxCart.getChildren().clear();
